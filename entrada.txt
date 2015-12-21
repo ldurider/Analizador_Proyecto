@@ -1,0 +1,29 @@
+int: b,r,j;
+
+float: j,k,l;
+int: a[3],b[3];
+
+$$
+
+int: funcion(int:a, char:b){
+int:a;
+float:b;
+
+a=b++;
+a=h-k;
+a=b;
+a=(h*k)+(j-a)+p;
+a[i++]=h+p;
+t=5+6*(5);
+
+if(a == 3)
+then a++;
+else a=h+k;
+}
+
+int: funcion2(){
+
+}
+
+
+//JOKO

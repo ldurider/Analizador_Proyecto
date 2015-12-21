@@ -1,0 +1,97 @@
+package compi;
+
+import java_cup.runtime.*;
+
+ 
+parser code
+{:
+public void syntax_error( Symbol s ){
+		System.out.println("Error de Sintaxis:"+"En linea " + s.left+" y columna " + s.right );
+}
+
+
+public void unrecovered_syntax_error( Symbol s ) throws java.lang.Exception
+{
+
+}
+:}
+
+action code
+{:
+:}
+
+terminal String TIPO,ID,END,COMA,DOSPUN ;
+terminal PAR_AB,PAR_CER,LLAV_AB,LLAV_CER,COR_AB,COR_CER ;
+terminal IGUAL, OP_UNARIO, OP_BINARIO,OP_COMP;
+terminal ENTERO;
+terminal String IF,THEN,ELSE,WHILE,DO;
+
+non terminal expr,EXP,exprvec,expr_list,decl_var,decl_vec,decl_fun,ENCAB,CUERPO,BLOQUE; 
+non terminal LISTA,LISTAV,VECT,DECL_LOC;
+non terminal COMANDO_SIM,ATRIBUCIONES,EXPRESION,CO;
+non terminal E,F;
+non terminal CONTROL_FLU,EXPRESION_COMP,T1;
+
+
+ 
+expr_list ::=   expr_list decl_var| decl_var |expr_list decl_vec| decl_vec|
+				expr_list decl_fun| decl_fun | error;
+                 
+/*Declaracion de variables globales*/   
+   	decl_var ::=   expr END;
+   
+   	expr ::= TIPO DOSPUN LISTA {: System.out.println("doc ok"); :};
+	LISTA ::= LISTA COMA ID
+         | ID;
+   
+/*Declaracion de vectores globales*/   
+   	
+   	decl_vec ::=   exprvec END; 
+   	
+   	exprvec ::= TIPO DOSPUN LISTAV {: System.out.println("doc ok"); :};
+	LISTAV ::= LISTAV COMA VECT|VECT;
+	VECT ::= ID COR_AB ENTERO COR_CER;
+ 
+ /*Declaracion de funciones*/
+ 
+ decl_fun ::= ENCAB CUERPO;
+ 
+ ENCAB ::= TIPO DOSPUN ID PAR_AB EXP PAR_CER ;
+ EXP ::= EXP COMA TIPO DOSPUN ID|TIPO DOSPUN ID| ;
+ CUERPO ::= LLAV_AB DECL_LOC BLOQUE LLAV_CER|LLAV_AB BLOQUE LLAV_CER|LLAV_AB LLAV_CER;
+ DECL_LOC ::= DECL_LOC decl_var| decl_var ;
+ 
+ /*Declaracion de Bloque*/   
+ 
+ BLOQUE ::= BLOQUE CO|CO ;
+ CO ::= COMANDO_SIM END|CONTROL_FLU; 
+  
+ /*Declaracion de Comandos Simple*/ 
+ 
+ COMANDO_SIM ::= ATRIBUCIONES;
+
+ /*Declaraciones de Atribuciones */
+ 
+ ATRIBUCIONES ::= ID IGUAL EXPRESION|ID COR_AB EXPRESION COR_CER IGUAL EXPRESION|ID OP_UNARIO;
+ 
+ /*Declaracion de Expresiones*/
+   
+ EXPRESION ::= E|ID OP_UNARIO;
+  
+	E ::= E OP_BINARIO F|F;
+	F ::= ID|ENTERO|PAR_AB E PAR_CER; 
+
+/*Declaracion de Expresion de Comparacion*/
+
+EXPRESION_COMP ::= ID OP_COMP ID|ID OP_COMP ENTERO;
+
+/*Declaracion de control de flujo*/
+
+CONTROL_FLU ::= IF PAR_AB EXPRESION_COMP PAR_CER THEN T1|
+				IF PAR_AB EXPRESION_COMP PAR_CER THEN T1 ELSE T1|
+				DO T1 WHILE PAR_AB EXPRESION_COMP PAR_CER|
+				WHILE PAR_AB EXPRESION_COMP PAR_CER DO T1;
+
+T1 ::= ATRIBUCIONES END;	
+
+
